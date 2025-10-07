@@ -12,8 +12,16 @@ program leo_test.aleo {
     @noupgrade
     async constructor() {}
 
-    transition main(public a: u32, b: u32) -> [u8; 34] {
-        let c: u32 = a + b;
-        return [0u8; 34];
+    async transition async_program_address() -> Future {
+        // This will throw an error: unkown member of self 
+        return finalize_main(self.address);
+    }
+
+    async function finalize_main(program_addess: address) {}
+
+
+    transition sync_program_address() -> address {
+        // This works
+        return self.address;
     }
 }

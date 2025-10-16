@@ -12,9 +12,9 @@ program mailbox.aleo {
     mapping state: bool => MyState;
 
     // In a perfect world we would be able to either call other programs inside of functions 
-    // Or somehow query the state in transtiions
+    // Or somehow query the state in transitions
     async transition dispatch(public current_state: MyState) -> Future {
-        // calculate message for other program
+        // Calculate message for other program
         // Message relies on the current state
         let message = Message {
             nonce: current_state.nonce,
@@ -60,14 +60,18 @@ program hook.aleo {
 
     async function finalize_post_dispatch(message: Message) {
         let current_state = state.get(true);
-        // get message id of the given message
+        // Get message id of the given message
+        // ID is the Keccak of the entire message
         let message_id = get_message_id(message);
 
-        // insert the message id into the tree
+        // Insert the message id into the tree
         let tree = insert_into_tree(tree, message);
         let root = merkle_root(tree);
         let index = tree.count - 1;
+        
+        // Emit events based on the calculation
         events.set(index, Event { root, index });
+        // Update the state
         state.set(true, tree);
     }
 }

@@ -53,7 +53,7 @@ program mailbox.aleo {
             let id = keccak_raw(dynamic_message);
         } 
         // .. continue all the way up to 128 Bytes
-        return finalize_process(current_state, message);
+        return finalize_process(id, message);
     }
 
     async function finalize_process(message_id: MessageId, message: StaticMessage) {
